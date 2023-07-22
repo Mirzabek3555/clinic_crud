@@ -5,13 +5,17 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class CheklarSeeder extends Model
-{    
-    protected $table ="receipt";
+class Customers extends Model
+{
+    use HasFactory;
+
     protected $fillable = [
         'name',
         'phone',
-        
+        'services',
     ];
-    use HasFactory;
+
+    protected $casts = [
+        'services' => 'json',
+    ];
 }

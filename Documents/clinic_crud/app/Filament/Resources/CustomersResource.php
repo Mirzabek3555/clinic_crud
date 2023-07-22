@@ -2,24 +2,23 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\ServicesResource\Pages;
-use App\Filament\Resources\ServicesResource\RelationManagers;
+use App\Filament\Resources\CustomersResource\Pages;
+use App\Filament\Resources\CustomersResource\RelationManagers;
+use App\Models\Customers;
 use App\Models\Services;
 use Filament\Forms;
+use Filament\Forms\Components\Select;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Forms\Components\Component;
 use Filament\Forms\Components\TextInput;
 
-
-class ServicesResource extends Resource
+class CustomersResource extends Resource
 {
-    protected static ?string $model = Services::class;
+    protected static ?string $model = Customers::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-collection';
 
@@ -27,9 +26,13 @@ class ServicesResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name')->required(),
-                TextInput::make('price')
-               
+                TextInput::make('name')->required(),
+                TextInput::make('phone'),
+                Select::make('services')
+                    ->label('Services')
+                    ->options(Services::all()->pluck('name', 'price'))
+                    ->multiple()
+                    ->searchable()
             ]);
     }
 
@@ -38,49 +41,38 @@ class ServicesResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')->sortable()->searchable(),
-                Tables\Columns\TextColumn::make('price')            
-                
+                Tables\Columns\TextColumn::make('phone'),
+                Tables\Columns\TextColumn::make('services'),
+                Tables\Columns\TextColumn::make('Price')
+                    // ->sum('services', 'price')
             ])
             ->filters([
                 //
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\DeleteAction::make(),
+
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
             ]);
-
-            // return $table
-            // ->columns([
-            //     Tables\Columns\TextColumn::make('name')->sortable()->searchable(),
-            //     Tables\Columns\TextColumn::make('phone')
-            // ])
-            // ->filters([
-            //     //
-            // ])
-            // ->actions([
-            //     Tables\Actions\EditAction::make(),
-            // ])
-            // ->bulkActions([
-            //     Tables\Actions\DeleteBulkAction::make(),
-            // ]);
     }
-    
+
     public static function getRelations(): array
     {
         return [
             //
         ];
     }
-    
+
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListServices::route('/'),
-            'create' => Pages\CreateServices::route('/create'),
-            'edit' => Pages\EditServices::route('/{record}/edit'),
+            'index' => Pages\ListCustomers::route('/'),
+            'create' => Pages\CreateCustomers::route('/create'),
+            'edit' => Pages\EditCustomers::route('/{record}/edit'),
         ];
-    }    
+    }
 }
