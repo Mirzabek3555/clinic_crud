@@ -13,8 +13,9 @@ return new class extends Migration
     {
         Schema::create('customers', function (Blueprint $table) {
             $table->id();
-            $table->string("name")->required();
-            $table->string("mobile")->required();
+            $table->string('name');
+            $table->string('phone');
+            $table->jsonb('services');
             $table->timestamps();
         });
     }
